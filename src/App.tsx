@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Hero } from './components/Hero'
 import { Portfolio } from './components/Portfolio'
 import { Awards } from './components/Awards'
@@ -8,6 +9,45 @@ import { Contact } from './components/Contact'
 import { Footer } from './components/Footer'
 
 export default function App() {
+  
+  // ==========================================
+  // SCROLL OBSERVER - URL CHANGING LOGIC
+  // ==========================================
+  useEffect(() => {
+    const handleObserver = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        // Jab koi section screen ke middle mein aata hai
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          
+          // Agar hero (top) section hai toh URL '/', nahi toh '/section-name'
+          const path = id === 'hero' ? '/' : `/${id}`;
+          
+          // URL update karo bina history kharab kiye (replaceState)
+          if (window.location.pathname !== path) {
+            window.history.replaceState(null, '', path);
+          }
+        }
+      });
+    };
+
+    // Observer setup: Trigger when a section crosses the middle of the viewport
+    const observer = new IntersectionObserver(handleObserver, {
+      root: null,
+      rootMargin: '-50% 0px -50% 0px', 
+      threshold: 0,
+    });
+
+    // Saare <section> tags ko observe karo jinke paas 'id' hai
+    const sections = document.querySelectorAll('section[id]');
+    sections.forEach((section) => observer.observe(section));
+
+    // Cleanup function
+    return () => {
+      sections.forEach((section) => observer.unobserve(section));
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-background text-foreground" style={{ overflow: 'visible' }}>
       <main className="relative" role="main" style={{ overflow: 'visible' }}>

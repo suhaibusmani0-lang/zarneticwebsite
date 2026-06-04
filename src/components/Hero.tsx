@@ -1,8 +1,8 @@
 'use client'
 
+import React, { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Volume2, VolumeX, Menu, X } from 'lucide-react'
-import { useState, useRef, useEffect } from 'react'
 
 export function Hero() {
   const [isMuted, setIsMuted] = useState(true)
@@ -94,6 +94,21 @@ export function Hero() {
     }
   }, [isMobileMenuOpen])
 
+  // ==========================================
+  // CUSTOM NAVIGATION HANDLER (REMOVES # FROM URL)
+  // ==========================================
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string, path: string) => {
+    e.preventDefault(); // Prevents default # behavior
+    
+    // Smooth scroll to section
+    const element = document.getElementById(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Clean URL update
+    window.history.pushState(null, '', path);
+  };
 
 
   return (
@@ -132,39 +147,45 @@ export function Hero() {
               className="flex items-center cursor-pointer"
               onClick={() => {
                 window.scrollTo({ top: 0, behavior: 'smooth' })
+                window.history.pushState(null, '', '/'); // Reset URL to home on logo click
               }}
             >
               <span className="font-bagel text-white text-xl tracking-wider">ZARNETIC</span>
             </motion.div>
 
-            {/* Navigation Menu */}
+            {/* Desktop Navigation Menu */}
             <div className="hidden md:flex items-center space-x-8">
               <a 
-                href="#portfolio" 
+                href="/portfolio" 
+                onClick={(e) => handleNavClick(e, 'portfolio', '/portfolio')}
                 className="text-white hover:text-white/80 font-medium gentle-animation hover:scale-105"
               >
                 Projects
               </a>
               <a 
-                href="#about" 
+                href="/about" 
+                onClick={(e) => handleNavClick(e, 'about', '/about')}
                 className="text-white hover:text-white/80 font-medium gentle-animation hover:scale-105"
               >
                 Process
               </a>
               <a 
-                href="#services" 
+                href="/services" 
+                onClick={(e) => handleNavClick(e, 'services', '/services')}
                 className="text-white hover:text-white/80 font-medium gentle-animation hover:scale-105"
               >
                 Services
               </a>
               <a 
-                href="#team" 
+                href="/team" 
+                onClick={(e) => handleNavClick(e, 'team', '/team')}
                 className="text-white hover:text-white/80 font-medium gentle-animation hover:scale-105"
               >
                 Team
               </a>
               <a 
-                href="#contact" 
+                href="/contact" 
+                onClick={(e) => handleNavClick(e, 'contact', '/contact')}
                 className="text-white hover:text-white/80 font-medium gentle-animation hover:scale-105"
               >
                 Contact
@@ -195,9 +216,9 @@ export function Hero() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => {
-                  const contactSection = document.getElementById('contact')
-                  contactSection?.scrollIntoView({ behavior: 'smooth' })
+                onClick={(e) => {
+                  const syntheticEvent = e as unknown as React.MouseEvent<HTMLAnchorElement>;
+                  handleNavClick(syntheticEvent, 'contact', '/contact');
                 }}
                 className="hidden sm:block bg-accent-blue backdrop-blur-sm text-white font-semibold px-6 py-3 rounded-md hover:opacity-90 gentle-animation ml-4 cursor-pointer"
               >
@@ -250,21 +271,51 @@ export function Hero() {
           <div className="flex flex-col px-6 pb-6 h-full">
             {/* Mobile Navigation Links */}
             <div className="flex flex-col space-y-4 text-white">
-              <a href="#portfolio" className="mobile-menu-link px-4 py-3 hover:text-white/80 hover:bg-white/10 rounded-lg gentle-animation font-medium text-lg active:bg-white/20" onClick={() => setIsMobileMenuOpen(false)}>Projects</a>
-              <a href="#about" className="mobile-menu-link px-4 py-3 hover:text-white/80 hover:bg-white/10 rounded-lg gentle-animation font-medium text-lg active:bg-white/20" onClick={() => setIsMobileMenuOpen(false)}>Process</a>
-              <a href="#services" className="mobile-menu-link px-4 py-3 hover:text-white/80 hover:bg-white/10 rounded-lg gentle-animation font-medium text-lg active:bg-white/20" onClick={() => setIsMobileMenuOpen(false)}>Services</a>
-              <a href="#team" className="mobile-menu-link px-4 py-3 hover:text-white/80 hover:bg-white/10 rounded-lg gentle-animation font-medium text-lg active:bg-white/20" onClick={() => setIsMobileMenuOpen(false)}>Team</a>
-              <a href="#contact" className="mobile-menu-link px-4 py-3 hover:text-white/80 hover:bg-white/10 rounded-lg gentle-animation font-medium text-lg active:bg-white/20" onClick={() => setIsMobileMenuOpen(false)}>Contact</a>
+              <a 
+                href="/portfolio" 
+                className="mobile-menu-link px-4 py-3 hover:text-white/80 hover:bg-white/10 rounded-lg gentle-animation font-medium text-lg active:bg-white/20" 
+                onClick={(e) => { handleNavClick(e, 'portfolio', '/portfolio'); setIsMobileMenuOpen(false); }}
+              >
+                Projects
+              </a>
+              <a 
+                href="/about" 
+                className="mobile-menu-link px-4 py-3 hover:text-white/80 hover:bg-white/10 rounded-lg gentle-animation font-medium text-lg active:bg-white/20" 
+                onClick={(e) => { handleNavClick(e, 'about', '/about'); setIsMobileMenuOpen(false); }}
+              >
+                Process
+              </a>
+              <a 
+                href="/services" 
+                className="mobile-menu-link px-4 py-3 hover:text-white/80 hover:bg-white/10 rounded-lg gentle-animation font-medium text-lg active:bg-white/20" 
+                onClick={(e) => { handleNavClick(e, 'services', '/services'); setIsMobileMenuOpen(false); }}
+              >
+                Services
+              </a>
+              <a 
+                href="/team" 
+                className="mobile-menu-link px-4 py-3 hover:text-white/80 hover:bg-white/10 rounded-lg gentle-animation font-medium text-lg active:bg-white/20" 
+                onClick={(e) => { handleNavClick(e, 'team', '/team'); setIsMobileMenuOpen(false); }}
+              >
+                Team
+              </a>
+              <a 
+                href="/contact" 
+                className="mobile-menu-link px-4 py-3 hover:text-white/80 hover:bg-white/10 rounded-lg gentle-animation font-medium text-lg active:bg-white/20" 
+                onClick={(e) => { handleNavClick(e, 'contact', '/contact'); setIsMobileMenuOpen(false); }}
+              >
+                Contact
+              </a>
             </div>
 
             {/* Mobile CTA Button */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                const contactSection = document.getElementById('contact')
-                contactSection?.scrollIntoView({ behavior: 'smooth' })
-                setIsMobileMenuOpen(false)
+              onClick={(e) => {
+                const syntheticEvent = e as unknown as React.MouseEvent<HTMLAnchorElement>;
+                handleNavClick(syntheticEvent, 'contact', '/contact');
+                setIsMobileMenuOpen(false);
               }}
               className="bg-accent-blue text-white font-semibold px-6 py-3 rounded-lg hover:opacity-90 gentle-animation mt-8 cursor-pointer"
             >
@@ -273,8 +324,6 @@ export function Hero() {
           </div>
         </div>
       </motion.div>
-
-
 
       {/* Big Studio Title - Lower Left */}
       <motion.div
@@ -291,7 +340,6 @@ export function Hero() {
           </h1>
         </div>
       </motion.div>
-
 
     </div>
   )
