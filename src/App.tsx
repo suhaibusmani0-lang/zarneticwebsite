@@ -11,6 +11,27 @@ import { Footer } from './components/Footer'
 export default function App() {
   
   // ==========================================
+  // DIRECT URL LOAD HANDLER (Direct link fix)
+  // ==========================================
+  useEffect(() => {
+    const currentPath = window.location.pathname;
+    
+    // Agar URL '/' nahi hai (jaise '/about' ya '/contact' hai)
+    if (currentPath !== '/' && currentPath.length > 1) {
+      // '/' ko hata kar target id nikalo ('about')
+      const targetId = currentPath.substring(1); 
+      const targetElement = document.getElementById(targetId);
+      
+      if (targetElement) {
+        // Halka sa delay taaki DOM render ho jaye, uske baad seedha us section par scroll kardo
+        setTimeout(() => {
+          targetElement.scrollIntoView({ behavior: 'instant' });
+        }, 100);
+      }
+    }
+  }, []); // Empty array ka matlab ye sirf initial page load par chalega
+
+  // ==========================================
   // SCROLL OBSERVER - URL CHANGING LOGIC
   // ==========================================
   useEffect(() => {
