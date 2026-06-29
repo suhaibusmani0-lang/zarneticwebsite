@@ -27,13 +27,13 @@ export function Team() {
       desc: "Leading international business development and strategic global partnerships."
     },
     { 
-      name: "Adv. Rahimullah Ansari", 
+      name: "Adv. Rahimullah", 
       role: "Legal & Compliance", 
       image: RahimImg,
       desc: "Expert in corporate law, business registrations, and legal documentation."
     },
     { 
-      name: "Mr Faizan Ansari", 
+      name: "Mr Faizan Ghani", 
       role: "Head of Data & AI", 
       image: FaizanImg,
       desc: "Architecting high-performance AI systems and scalable digital products."
@@ -45,7 +45,7 @@ export function Team() {
       desc: "Performance marketing specialist focused on data-driven growth and SEO."
     },
     { 
-      name: "Miss Safia Ansari", 
+      name: "Miss Safia ", 
       role: "UX/UI Design Lead", 
       image: SafiaImg,
       desc: "Crafting premium user interfaces and seamless brand identities."
