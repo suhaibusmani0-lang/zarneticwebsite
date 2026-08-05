@@ -59,7 +59,7 @@ export function Footer() {
                   </div>
                   <div className="leading-relaxed text-sm lg:text-base">
                     <span className="text-white font-bold block mb-1 uppercase tracking-widest text-[10px]">Corp Office</span>
-                    430 2nd Floor Sant Nagar East of Kailash,<br /> New Delhi 110065
+                    38 1st Floor, Lane No 7 Noor Nagar Jamia Nagar,<br /> Okhla New Delhi 110065
                   </div>
                 </div>
 
