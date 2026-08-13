@@ -9,88 +9,49 @@ import { Contact } from './components/Contact'
 import { Footer } from './components/Footer'
 
 export default function App() {
-  
-  // ==========================================
-  // DIRECT URL LOAD HANDLER (Direct link fix)
-  // ==========================================
   useEffect(() => {
-    const currentPath = window.location.pathname;
-    
-    // Agar URL '/' nahi hai (jaise '/about' ya '/contact' hai)
-    if (currentPath !== '/' && currentPath.length > 1) {
-      // '/' ko hata kar target id nikalo ('about')
-      const targetId = currentPath.substring(1); 
-      const targetElement = document.getElementById(targetId);
-      
-      if (targetElement) {
-        // Halka sa delay taaki DOM render ho jaye, uske baad seedha us section par scroll kardo
-        setTimeout(() => {
-          targetElement.scrollIntoView({ behavior: 'instant' });
-        }, 100);
-      }
-    }
-  }, []); // Empty array ka matlab ye sirf initial page load par chalega
+    const path = window.location.pathname.replace(/^\/+/, '')
+    if (!path || path.includes('.')) return
 
-  // ==========================================
-  // SCROLL OBSERVER - URL CHANGING LOGIC
-  // ==========================================
-  useEffect(() => {
-    const handleObserver = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        // Jab koi section screen ke middle mein aata hai
-        if (entry.isIntersecting) {
-          const id = entry.target.id;
-          
-          // Agar hero (top) section hai toh URL '/', nahi toh '/section-name'
-          const path = id === 'hero' ? '/' : `/${id}`;
-          
-          // URL update karo bina history kharab kiye (replaceState)
-          if (window.location.pathname !== path) {
-            window.history.replaceState(null, '', path);
-          }
-        }
-      });
-    };
+    const target = document.getElementById(path)
+    if (!target) return
 
-    // Observer setup: Trigger when a section crosses the middle of the viewport
-    const observer = new IntersectionObserver(handleObserver, {
-      root: null,
-      rootMargin: '-50% 0px -50% 0px', 
-      threshold: 0,
-    });
+    const frame = window.requestAnimationFrame(() => {
+      target.scrollIntoView({ behavior: 'auto', block: 'start' })
+    })
 
-    // Saare <section> tags ko observe karo jinke paas 'id' hai
-    const sections = document.querySelectorAll('section[id]');
-    sections.forEach((section) => observer.observe(section));
-
-    // Cleanup function
-    return () => {
-      sections.forEach((section) => observer.unobserve(section));
-    };
-  }, []);
+    return () => window.cancelAnimationFrame(frame)
+  }, [])
 
   return (
-    <div className="min-h-screen bg-background text-foreground" style={{ overflow: 'visible' }}>
-      <main className="relative" role="main" style={{ overflow: 'visible' }}>
-        <section id="hero" aria-label="Hero section">
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-lg focus:bg-white focus:px-4 focus:py-3 focus:text-black focus:shadow-2xl"
+      >
+        Skip to main content
+      </a>
+
+      <main id="main-content" className="relative" aria-label="Zarnetic digital agency website">
+        <section id="hero" aria-label="Zarnetic digital agency hero">
           <Hero />
         </section>
-        <section id="portfolio" aria-label="Portfolio section">
+        <section id="portfolio" aria-label="Selected Zarnetic projects">
           <Portfolio />
         </section>
-        <section id="awards" aria-label="Awards section">
+        <section id="awards" aria-label="Zarnetic awards and recognition">
           <Awards />
         </section>
-        <section id="about" aria-label="About section">
+        <section id="about" aria-label="About Zarnetic">
           <About />
         </section>
-        <section id="services" aria-label="Services section">
+        <section id="services" aria-label="Zarnetic services">
           <Services />
         </section>
-        <section id="team" aria-label="Team section" style={{ overflow: 'visible', height: 'auto', minHeight: '0', maxHeight: 'none' }}>
+        <section id="team" aria-label="Zarnetic core team">
           <Team />
         </section>
-        <section id="contact" aria-label="Contact section">
+        <section id="contact" aria-label="Contact Zarnetic">
           <Contact />
         </section>
       </main>
