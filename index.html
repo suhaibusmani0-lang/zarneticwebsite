@@ -1,15 +1,6 @@
 <!doctype html>
 <html lang="en-IN">
   <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PQYXZKJ37J"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-PQYXZKJ37J');
-    </script>
-
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#030303" />
@@ -117,6 +108,26 @@
 
   <body>
     <div id="root"></div>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = window.gtag || function(){ window.dataLayer.push(arguments); };
+      window.gtag('js', new Date());
+      window.gtag('config', 'G-PQYXZKJ37J', { send_page_view: false });
+      const loadAnalytics = () => {
+        if (window.__zarneticGtagLoaded) return;
+        window.__zarneticGtagLoaded = true;
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-PQYXZKJ37J';
+        document.head.appendChild(script);
+        window.gtag('config', 'G-PQYXZKJ37J', { send_page_view: true });
+      };
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(loadAnalytics, { timeout: 3000 });
+      } else {
+        window.addEventListener('load', () => setTimeout(loadAnalytics, 1500), { once: true });
+      }
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
