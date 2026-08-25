@@ -1,346 +1,73 @@
-'use client'
-
-import React, { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Volume2, VolumeX, Menu, X } from 'lucide-react'
+import { ArrowUpRight, Check, MapPin, Menu, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
+
+const navItems = [
+  ['Services', 'services'],
+  ['Our work', 'portfolio'],
+  ['About us', 'about'],
+  ['Team', 'team'],
+  ['Contact', 'contact'],
+]
 
 export function Hero() {
-  const [isMuted, setIsMuted] = useState(true)
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const videoRef = useRef<HTMLVideoElement>(null)
 
-  // Scroll detection
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY
-      setIsScrolled(scrollTop > 50) // Show background after 50px scroll
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    const onScroll = () => setIsScrolled(window.scrollY > 24)
+    window.addEventListener('scroll', onScroll)
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Ensure video is muted immediately on load to prevent any audio
   useEffect(() => {
-    if (videoRef.current) {
-      console.log('Video element found, setting up...')
-      videoRef.current.volume = 0
-      videoRef.current.muted = true
-      videoRef.current.defaultMuted = true
-      
-      // Add event listeners for debugging
-      videoRef.current.addEventListener('loadstart', () => console.log('Video: loadstart'))
-      videoRef.current.addEventListener('loadedmetadata', () => console.log('Video: loadedmetadata'))
-      videoRef.current.addEventListener('canplay', () => console.log('Video: canplay'))
-      videoRef.current.addEventListener('playing', () => console.log('Video: playing'))
-      videoRef.current.addEventListener('error', (e) => console.error('Video error:', e))
-      
-      // Force mute on play
-      videoRef.current.addEventListener('play', () => {
-        if (videoRef.current) {
-          console.log('Video play event fired')
-          videoRef.current.muted = isMuted
-          videoRef.current.volume = isMuted ? 0 : 0.7
-        }
-      })
-      
-      // Try to play the video
-      const playPromise = videoRef.current.play()
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => console.log('Video autoplay successful'))
-          .catch(error => console.error('Video autoplay failed:', error))
-      }
-    }
-  }, [])
-
-  // Update video mute state when isMuted changes
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.muted = isMuted
-      videoRef.current.volume = isMuted ? 0 : 0.7
-    }
-  }, [isMuted])
-
-  // Handle body scroll lock when mobile menu is open
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'unset'
-    }
-
-    // Cleanup on unmount
-    return () => {
-      document.body.style.overflow = 'unset'
-    }
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
   }, [isMobileMenuOpen])
 
-  // Close mobile menu on scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      if (isMobileMenuOpen) {
-        setIsMobileMenuOpen(false)
-      }
-    }
-
-    if (isMobileMenuOpen) {
-      window.addEventListener('scroll', handleScroll)
-    }
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [isMobileMenuOpen])
-
-  // ==========================================
-  // CUSTOM NAVIGATION HANDLER (REMOVES # FROM URL)
-  // ==========================================
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string, path: string) => {
-    e.preventDefault(); // Prevents default # behavior
-    
-    // Smooth scroll to section
-    const element = document.getElementById(targetId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // Clean URL update
-    window.history.pushState(null, '', path);
-  };
-
+  const goTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    window.history.pushState(null, '', id === 'hero' ? '/' : `/${id}`)
+    setIsMobileMenuOpen(false)
+  }
 
   return (
-    <div className="relative h-screen w-full overflow-hidden bg-black">
-      {/* MASSIVE VIDEO - Takes up 95% of space */}
-      <video
-        ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover scale-110"
-        autoPlay
-        muted
-        loop
-        playsInline
-      >
-        <source src="https://mojli.s3.us-east-2.amazonaws.com/Mojli+Website+upscaled+(12mb).webm" type="video/webm" />
-        Your browser does not support the video tag.
-      </video>
+    <section id="hero" className="relative min-h-screen overflow-hidden bg-[#07111f] text-white">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(36,125,255,.25),transparent_32%),linear-gradient(135deg,#07111f_0%,#0b1b31_50%,#07111f_100%)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:linear-gradient(rgba(255,255,255,.5)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.5)_1px,transparent_1px)] [background-size:72px_72px]" />
 
-      {/* Full-Width Navbar */}
-      <motion.nav
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.3 }}
-        className="fixed top-0 left-0 right-0 w-full z-[110]"
-      >
-        <div 
-          className={`w-full px-6 sm:px-8 lg:px-12 py-4 transition-all duration-300 ease-out ${
-            isScrolled 
-              ? 'bg-black/80 backdrop-blur-xl border-b border-white/10' 
-              : 'bg-transparent'
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="flex items-center cursor-pointer"
-              onClick={() => {
-                window.scrollTo({ top: 0, behavior: 'smooth' })
-                window.history.pushState(null, '', '/'); // Reset URL to home on logo click
-              }}
-            >
-              <span className="font-bagel text-white text-xl tracking-wider">ZARNETIC</span>
-            </motion.div>
-
-            {/* Desktop Navigation Menu */}
-            <div className="hidden md:flex items-center space-x-8">
-              <a 
-                href="/portfolio" 
-                onClick={(e) => handleNavClick(e, 'portfolio', '/portfolio')}
-                className="text-white hover:text-white/80 font-medium gentle-animation hover:scale-105"
-              >
-                Projects
-              </a>
-              <a 
-                href="/about" 
-                onClick={(e) => handleNavClick(e, 'about', '/about')}
-                className="text-white hover:text-white/80 font-medium gentle-animation hover:scale-105"
-              >
-                Process
-              </a>
-              <a 
-                href="/services" 
-                onClick={(e) => handleNavClick(e, 'services', '/services')}
-                className="text-white hover:text-white/80 font-medium gentle-animation hover:scale-105"
-              >
-                Services
-              </a>
-              <a 
-                href="/team" 
-                onClick={(e) => handleNavClick(e, 'team', '/team')}
-                className="text-white hover:text-white/80 font-medium gentle-animation hover:scale-105"
-              >
-                Team
-              </a>
-              <a 
-                href="/contact" 
-                onClick={(e) => handleNavClick(e, 'contact', '/contact')}
-                className="text-white hover:text-white/80 font-medium gentle-animation hover:scale-105"
-              >
-                Contact
-              </a>
-            </div>
-
-            {/* Right Side - Video Controls + CTA + Mobile Menu */}
-            <div className="flex items-center space-x-3 relative">
-              {/* Video Controls with Sound On indicator */}
-              <div className="relative">
-                <button
-                  onClick={() => setIsMuted(!isMuted)}
-                  className="glass-effect p-3 rounded-full text-white hover:bg-white/20 gentle-animation cursor-pointer"
-                >
-                  {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-                </button>
-                
-                {/* Sound On indicator - only show when muted */}
-                {isMuted && (
-                  <div className="absolute -bottom-10 right-0 flex items-center text-white/80">
-                    <span className="whitespace-nowrap font-medium text-sm mr-2">Sound On</span>
-                    <span className="text-lg">↗</span>
-                  </div>
-                )}
-              </div>
-              
-              {/* CTA Button - Hidden on mobile */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={(e) => {
-                  const syntheticEvent = e as unknown as React.MouseEvent<HTMLAnchorElement>;
-                  handleNavClick(syntheticEvent, 'contact', '/contact');
-                }}
-                className="hidden sm:block bg-accent-blue backdrop-blur-sm text-white font-semibold px-6 py-3 rounded-md hover:opacity-90 gentle-animation ml-4 cursor-pointer"
-              >
-                Get Started
-              </motion.button>
-
-              {/* Mobile Hamburger Menu Button */}
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="md:hidden glass-effect p-3 rounded-full text-white hover:bg-white/20 active:bg-white/30 gentle-animation cursor-pointer z-[120] relative"
-              >
-                {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
-            </div>
+      <nav className={`fixed left-0 right-0 top-0 z-50 transition-all ${isScrolled ? 'border-b border-white/10 bg-[#07111f]/90 backdrop-blur-xl' : ''}`} aria-label="Main navigation">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-10">
+          <button onClick={() => goTo('hero')} className="flex items-center gap-3" aria-label="Go to homepage">
+            <span className="grid h-10 w-10 place-items-center rounded-full bg-[#2f8cff] text-sm font-black italic">M</span>
+            <span className="text-lg font-bold tracking-tight">Mahira Digital</span>
+          </button>
+          <div className="hidden items-center gap-8 md:flex">
+            {navItems.map(([label, id]) => <button key={id} onClick={() => goTo(id)} className="text-sm text-white/75 transition hover:text-white">{label}</button>)}
           </div>
+          <button onClick={() => goTo('contact')} className="hidden items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-[#07111f] transition hover:bg-[#b9dcff] sm:flex">Get a free consultation <ArrowUpRight size={16} /></button>
+          <button className="rounded-full border border-white/20 p-2 md:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} aria-label="Toggle menu">{isMobileMenuOpen ? <X size={21} /> : <Menu size={21} />}</button>
         </div>
-      </motion.nav>
+      </nav>
 
-      {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-md z-[80] cursor-pointer"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
+      {isMobileMenuOpen && <div className="fixed inset-0 z-40 bg-[#07111f] px-6 pt-28 md:hidden"><div className="flex flex-col gap-6">{navItems.map(([label, id]) => <button key={id} onClick={() => goTo(id)} className="text-left text-3xl font-semibold">{label}</button>)}<button onClick={() => goTo('contact')} className="mt-3 w-fit rounded-full bg-white px-5 py-3 font-semibold text-[#07111f]">Get a free consultation</button></div></div>}
 
-      {/* Mobile Menu Panel */}
-      <motion.div
-        initial={{ x: '100%' }}
-        animate={{ x: isMobileMenuOpen ? '0%' : '100%' }}
-        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className="md:hidden fixed top-0 right-0 h-full w-72 max-w-[85vw] bg-black/90 backdrop-blur-xl border-l border-white/10 z-[90] mobile-menu-panel pointer-events-auto"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex flex-col h-full">
-          {/* Close Button at the top */}
-          <div className="flex justify-end p-4">
-            <button
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="glass-effect p-3 rounded-full text-white hover:bg-white/20 active:bg-white/30 gentle-animation cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-          
-          <div className="flex flex-col px-6 pb-6 h-full">
-            {/* Mobile Navigation Links */}
-            <div className="flex flex-col space-y-4 text-white">
-              <a 
-                href="/portfolio" 
-                className="mobile-menu-link px-4 py-3 hover:text-white/80 hover:bg-white/10 rounded-lg gentle-animation font-medium text-lg active:bg-white/20" 
-                onClick={(e) => { handleNavClick(e, 'portfolio', '/portfolio'); setIsMobileMenuOpen(false); }}
-              >
-                Projects
-              </a>
-              <a 
-                href="/about" 
-                className="mobile-menu-link px-4 py-3 hover:text-white/80 hover:bg-white/10 rounded-lg gentle-animation font-medium text-lg active:bg-white/20" 
-                onClick={(e) => { handleNavClick(e, 'about', '/about'); setIsMobileMenuOpen(false); }}
-              >
-                Process
-              </a>
-              <a 
-                href="/services" 
-                className="mobile-menu-link px-4 py-3 hover:text-white/80 hover:bg-white/10 rounded-lg gentle-animation font-medium text-lg active:bg-white/20" 
-                onClick={(e) => { handleNavClick(e, 'services', '/services'); setIsMobileMenuOpen(false); }}
-              >
-                Services
-              </a>
-              <a 
-                href="/team" 
-                className="mobile-menu-link px-4 py-3 hover:text-white/80 hover:bg-white/10 rounded-lg gentle-animation font-medium text-lg active:bg-white/20" 
-                onClick={(e) => { handleNavClick(e, 'team', '/team'); setIsMobileMenuOpen(false); }}
-              >
-                Team
-              </a>
-              <a 
-                href="/contact" 
-                className="mobile-menu-link px-4 py-3 hover:text-white/80 hover:bg-white/10 rounded-lg gentle-animation font-medium text-lg active:bg-white/20" 
-                onClick={(e) => { handleNavClick(e, 'contact', '/contact'); setIsMobileMenuOpen(false); }}
-              >
-                Contact
-              </a>
-            </div>
-
-            {/* Mobile CTA Button */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={(e) => {
-                const syntheticEvent = e as unknown as React.MouseEvent<HTMLAnchorElement>;
-                handleNavClick(syntheticEvent, 'contact', '/contact');
-                setIsMobileMenuOpen(false);
-              }}
-              className="bg-accent-blue text-white font-semibold px-6 py-3 rounded-lg hover:opacity-90 gentle-animation mt-8 cursor-pointer"
-            >
-              Get Started
-            </motion.button>
-          </div>
+      <div className="relative mx-auto flex min-h-screen max-w-7xl items-center px-6 pb-20 pt-32 lg:px-10">
+        <div className="grid w-full items-end gap-14 lg:grid-cols-[1.08fr_.92fr]">
+          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7 }}>
+            <div className="mb-7 flex items-center gap-2 text-sm font-medium text-[#83bcff]"><MapPin size={16} /> New Delhi · Serving businesses across India</div>
+            <h1 className="max-w-3xl text-balance text-5xl font-bold leading-[1.02] tracking-[-.055em] sm:text-6xl lg:text-7xl xl:text-[6.2rem]">Digital growth that makes your business <span className="text-[#72b4ff]">impossible to ignore.</span></h1>
+            <p className="mt-8 max-w-xl text-lg leading-8 text-white/65">Mahira Digital is a performance-led digital marketing agency in Delhi helping ambitious businesses get found, trusted and chosen.</p>
+            <div className="mt-9 flex flex-wrap gap-4"><button onClick={() => goTo('contact')} className="flex items-center gap-2 rounded-full bg-[#2f8cff] px-6 py-4 font-semibold transition hover:bg-[#5ba5ff]">Start growing today <ArrowUpRight size={18} /></button><button onClick={() => goTo('portfolio')} className="rounded-full border border-white/20 px-6 py-4 font-semibold text-white/80 transition hover:border-white/50 hover:text-white">See our work</button></div>
+            <div className="mt-12 flex flex-wrap gap-x-7 gap-y-3 text-sm text-white/55">{['SEO that compounds', 'Websites built to convert', 'Transparent partnerships'].map(item => <span key={item} className="flex items-center gap-2"><Check size={15} className="text-[#72b4ff]" />{item}</span>)}</div>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, scale: .96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .8, delay: .15 }} className="relative hidden min-h-[480px] lg:block">
+            <div className="absolute right-2 top-4 h-[390px] w-[390px] rounded-full border border-[#72b4ff]/25" /><div className="absolute right-20 top-20 h-[270px] w-[270px] rounded-full border border-[#72b4ff]/20" />
+            <div className="absolute right-0 top-32 w-[330px] rounded-3xl border border-white/15 bg-white/[.08] p-6 shadow-2xl backdrop-blur-xl"><p className="text-sm text-white/55">Your growth dashboard</p><div className="mt-8 flex items-end gap-3"><span className="text-6xl font-semibold tracking-tight">4.9</span><span className="pb-2 text-amber-300">★★★★★</span></div><p className="mt-1 text-sm text-white/60">235 Google reviews</p><div className="mt-8 h-24 rounded-xl bg-[linear-gradient(135deg,rgba(114,180,255,.3),rgba(47,140,255,.04))] p-3"><div className="flex h-full items-end gap-2">{[30,44,38,56,65,72,88,82,100].map((height, index) => <span key={index} className="flex-1 rounded-t bg-[#72b4ff]" style={{ height: `${height}%` }} />)}</div></div><div className="mt-5 flex items-center justify-between border-t border-white/10 pt-4 text-sm"><span className="text-white/55">Organic visibility</span><span className="font-semibold text-[#8bc3ff]">+184%</span></div></div>
+            <div className="absolute bottom-3 left-4 rounded-2xl border border-white/15 bg-[#102641] p-5 shadow-xl"><p className="text-3xl font-semibold">10+ years</p><p className="mt-1 text-sm text-white/55">building brands that grow</p></div>
+          </motion.div>
         </div>
-      </motion.div>
-
-      {/* Big Studio Title - Lower Left */}
-      <motion.div
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 1, delay: 1.5 }}
-        className="absolute bottom-12 left-6 sm:left-8 lg:left-12 z-40"
-      >
-        <div className="max-w-2xl">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black leading-tight text-white">
-            <span className="block">INNOVATIVE IT</span>
-            <span className="block">SOLUTIONS</span>
-            <span className="block">WITHOUT LIMITS</span>
-          </h1>
-        </div>
-      </motion.div>
-
-    </div>
+      </div>
+    </section>
   )
 }
