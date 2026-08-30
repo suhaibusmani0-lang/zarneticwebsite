@@ -306,6 +306,7 @@
     --radius-2xl: 1rem;
     --radius-3xl: 1.5rem;
     --ease-out: cubic-bezier(0, 0, .2, 1);
+    --ease-in-out: cubic-bezier(.4, 0, .2, 1);
     --animate-spin: spin 1s linear infinite;
     --animate-ping: ping 1s cubic-bezier(0, 0, .2, 1) infinite;
     --animate-pulse: pulse 2s cubic-bezier(.4, 0, .6, 1) infinite;
@@ -782,6 +783,10 @@
     bottom: 0;
   }
 
+  .-top-\[10\%\] {
+    top: -10%;
+  }
+
   .top-0 {
     top: 0;
   }
@@ -840,6 +845,10 @@
 
   .bottom-\[-20\%\] {
     bottom: -20%;
+  }
+
+  .-left-\[10\%\] {
+    left: -10%;
   }
 
   .-left-\[41px\] {
@@ -1159,6 +1168,10 @@
     height: 60%;
   }
 
+  .h-\[120\%\] {
+    height: 120%;
+  }
+
   .h-\[400px\] {
     height: 400px;
   }
@@ -1273,6 +1286,10 @@
 
   .w-\[60\%\] {
     width: 60%;
+  }
+
+  .w-\[120\%\] {
+    width: 120%;
   }
 
   .w-\[400px\] {
@@ -2305,9 +2322,17 @@
     --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
   }
 
+  .bg-cover {
+    background-size: cover;
+  }
+
   .bg-clip-text {
     -webkit-background-clip: text;
     background-clip: text;
+  }
+
+  .bg-center {
+    background-position: center;
   }
 
   .fill-current {
@@ -2978,6 +3003,11 @@
   .duration-700 {
     --tw-duration: .7s;
     transition-duration: .7s;
+  }
+
+  .ease-in-out {
+    --tw-ease: var(--ease-in-out);
+    transition-timing-function: var(--ease-in-out);
   }
 
   .ease-out {

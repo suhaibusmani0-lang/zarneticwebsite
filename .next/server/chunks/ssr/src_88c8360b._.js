@@ -13,15 +13,9 @@ function HeroBackground() {
         className: "absolute inset-0 w-full h-full overflow-hidden bg-[#020202] pointer-events-none",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "absolute inset-0 opacity-20",
+                className: "absolute inset-0 w-[120%] h-[120%] -left-[10%] -top-[10%] opacity-40 mix-blend-screen animate-ken-burns bg-cover bg-center",
                 style: {
-                    backgroundImage: `
-            linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)
-          `,
-                    backgroundSize: '4rem 4rem',
-                    transform: 'perspective(1000px) rotateX(60deg) translateY(-100px) translateZ(-200px)',
-                    animation: 'grid-move 15s linear infinite'
+                    backgroundImage: "url('/images/hero-bg.jpg')"
                 }
             }, void 0, false, {
                 fileName: "[project]/src/components/home/HeroBackground.tsx",
@@ -32,7 +26,7 @@ function HeroBackground() {
                 className: "absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-600/30 blur-[120px] rounded-full mix-blend-screen animate-pulse-slow"
             }, void 0, false, {
                 fileName: "[project]/src/components/home/HeroBackground.tsx",
-                lineNumber: 20,
+                lineNumber: 14,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -42,7 +36,7 @@ function HeroBackground() {
                 }
             }, void 0, false, {
                 fileName: "[project]/src/components/home/HeroBackground.tsx",
-                lineNumber: 21,
+                lineNumber: 15,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -52,22 +46,26 @@ function HeroBackground() {
                 }
             }, void 0, false, {
                 fileName: "[project]/src/components/home/HeroBackground.tsx",
-                lineNumber: 22,
+                lineNumber: 16,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "absolute inset-0 opacity-30 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay"
             }, void 0, false, {
                 fileName: "[project]/src/components/home/HeroBackground.tsx",
-                lineNumber: 25,
+                lineNumber: 19,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("style", {
                 dangerouslySetInnerHTML: {
                     __html: `
-          @keyframes grid-move {
-            0% { transform: perspective(1000px) rotateX(60deg) translateY(0) translateZ(-200px); }
-            100% { transform: perspective(1000px) rotateX(60deg) translateY(4rem) translateZ(-200px); }
+          @keyframes ken-burns {
+            0% { transform: scale(1) translate(0, 0); }
+            50% { transform: scale(1.15) translate(-2%, -2%); }
+            100% { transform: scale(1) translate(0, 0); }
+          }
+          .animate-ken-burns {
+            animation: ken-burns 40s ease-in-out infinite;
           }
           .animate-pulse-slow {
             animation: pulse-slow 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -80,7 +78,7 @@ function HeroBackground() {
                 }
             }, void 0, false, {
                 fileName: "[project]/src/components/home/HeroBackground.tsx",
-                lineNumber: 27,
+                lineNumber: 21,
                 columnNumber: 7
             }, this)
         ]
