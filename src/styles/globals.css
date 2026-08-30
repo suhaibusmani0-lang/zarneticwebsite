@@ -1,0 +1,255 @@
+@import "tailwindcss";
+
+/* ============================================
+   DESIGN TOKENS — Zarnetic Luxury Theme
+   ============================================ */
+
+@theme inline {
+  --color-background: #030303;
+  --color-foreground: #fafafa;
+  --color-muted: #1a1a1a;
+  --color-muted-foreground: #a1a1aa;
+  --color-card: #080808;
+  --color-card-foreground: #fafafa;
+  --color-border: rgba(255, 255, 255, 0.05);
+  --color-ring: #FF2020;
+
+  --color-accent-blue: #FF2020;
+  --color-accent-emerald: #059669;
+  --color-accent-purple: #7c3aed;
+  --color-accent-orange: #f97316;
+  --color-accent-pink: #ec4899;
+
+  --font-space: var(--font-space), 'Space Grotesk', sans-serif;
+  --font-outfit: var(--font-outfit), 'Outfit', sans-serif;
+
+  /* Luxury animations */
+  --animate-marquee-left: marquee-left 60s linear infinite;
+  --animate-marquee-right: marquee-right 60s linear infinite;
+  --animate-marquee-vertical: marquee-vertical 100s linear infinite;
+  --animate-marquee-horizontal: marquee-horizontal 50s linear infinite;
+  --animate-float: float-gentle 6s ease-in-out infinite;
+  --animate-pulse-glow: pulse-glow 3s ease-in-out infinite;
+  --animate-grain: grain 8s steps(10) infinite;
+  --animate-text-reveal: text-reveal 0.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+  --animate-fade-up: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-fade-in: fade-in 0.5s ease-out forwards;
+  --animate-slide-in-right: slide-in-right 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+  @keyframes marquee-left {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes marquee-right {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+  @keyframes marquee-vertical {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+  }
+  @keyframes marquee-horizontal {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes float-gentle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.05); }
+  }
+  @keyframes grain {
+    0%, 100% { transform: translate(0, 0); }
+    10% { transform: translate(-5%, -10%); }
+    20% { transform: translate(-15%, 5%); }
+    30% { transform: translate(7%, -25%); }
+    40% { transform: translate(-5%, 25%); }
+    50% { transform: translate(-15%, 10%); }
+    60% { transform: translate(15%, 0%); }
+    70% { transform: translate(0%, 15%); }
+    80% { transform: translate(3%, 35%); }
+    90% { transform: translate(-10%, 10%); }
+  }
+  @keyframes text-reveal {
+    0% { transform: translateY(100%); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes fade-up {
+    0% { transform: translateY(30px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @keyframes slide-in-right {
+    0% { transform: translateX(100%); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+  }
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: #030303;
+  color: #fafafa;
+  margin: 0;
+  min-width: 320px;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(255, 32, 32, 0.28);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid #FF2020;
+  outline-offset: 3px;
+}
+
+/* Tap highlight reset for mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ============================================
+   CUSTOM UTILITIES
+   ============================================ */
+
+.font-space {
+  font-family: var(--font-space), 'Space Grotesk', sans-serif;
+}
+
+/* Glassmorphism */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(25px) saturate(1.5);
+  -webkit-backdrop-filter: blur(25px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-navbar {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(30px) saturate(1.8);
+  -webkit-backdrop-filter: blur(30px) saturate(1.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Text shadows for readability over video/images */
+.text-shadow-strong {
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8), 0 4px 40px rgba(0, 0, 0, 0.5);
+}
+
+.text-shadow-medium {
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Luxury text stroke for portfolio marquee */
+.luxury-text-stroke {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.luxury-text-stroke-dim {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.luxury-text-fill {
+  -webkit-text-fill-color: white;
+  -webkit-text-stroke: 0;
+  text-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
+}
+
+/* Noise texture overlay */
+.noise-overlay::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+  animation: grain 8s steps(10) infinite;
+}
+
+/* Gradient mesh animation for hero background */
+.gradient-mesh {
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(255, 32, 32, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(5, 150, 105, 0.08) 0%, transparent 50%),
+    #030303;
+  background-size: 100% 100%;
+}
+
+/* Smooth transition utility */
+.transition-luxury {
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #030303;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ============================================
+   ACCESSIBILITY — REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================
+   RESPONSIVE — OVERFLOW FIX
+   ============================================ */
+
+html,
+body,
+#__next {
+  overflow-x: hidden !important;
+}
+
+

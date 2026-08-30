@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 5, "column": 0}, "map": {"version":3,"sources":["file:///D:/Zarnetic/F2/zarneticwebsite-main/src/app/loading.tsx"],"sourcesContent":["export default function Loading() {\n  return (\n    <div className=\"fixed inset-0 bg-[#030303] flex items-center justify-center z-50\">\n      <div className=\"text-center\">\n        <h1 className=\"text-4xl md:text-6xl font-bagel text-white animate-pulse tracking-widest\">\n          ZARNETIC\n        </h1>\n        <div className=\"mt-8 flex justify-center gap-2\">\n          <div className=\"w-2 h-2 rounded-full bg-white/50 animate-bounce [animation-delay:-0.3s]\"></div>\n          <div className=\"w-2 h-2 rounded-full bg-white/50 animate-bounce [animation-delay:-0.15s]\"></div>\n          <div className=\"w-2 h-2 rounded-full bg-white/50 animate-bounce\"></div>\n        </div>\n      </div>\n    </div>\n  )\n}\n"],"names":[],"mappings":";;;;;AAAe,SAAS;IACtB,qBACE,8OAAC;QAAI,WAAU;kBACb,cAAA,8OAAC;YAAI,WAAU;;8BACb,8OAAC;oBAAG,WAAU;8BAA2E;;;;;;8BAGzF,8OAAC;oBAAI,WAAU;;sCACb,8OAAC;4BAAI,WAAU;;;;;;sCACf,8OAAC;4BAAI,WAAU;;;;;;sCACf,8OAAC;4BAAI,WAAU;;;;;;;;;;;;;;;;;;;;;;;AAKzB","debugId":null}}]
+}
