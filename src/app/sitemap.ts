@@ -2,6 +2,8 @@ import { MetadataRoute } from 'next'
 import { getAllServiceSlugs } from '@/data/services'
 import { getAllClientSlugs } from '@/data/portfolio'
 
+export const dynamic = 'force-static'
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://zarnetic.com'
   const services = await getAllServiceSlugs()
