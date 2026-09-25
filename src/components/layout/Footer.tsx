@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { company } from '@/data/company';
 import { services } from '@/data/services';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Lock } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -89,8 +89,22 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="flex flex-col md:flex-row items-center justify-between text-sm text-gray-500 pt-8 border-t border-white/5 font-outfit">
+        <div className="flex flex-col md:flex-row items-center justify-between text-sm text-gray-500 pt-8 border-t border-white/5 font-outfit gap-4">
           <p>© {new Date().getFullYear()} ZARNETIC. All rights reserved.</p>
+          
+          <div className="flex items-center space-x-6 text-xs">
+            <Link href="/client-portal" className="text-gray-400 hover:text-white transition-colors">
+              Client Portal
+            </Link>
+            <Link 
+              href="/crm" 
+              className="inline-flex items-center gap-1.5 text-zinc-400 hover:text-red-400 transition-colors py-1.5 px-3 rounded-lg border border-white/10 hover:border-red-500/40 bg-white/[0.03]"
+            >
+              <Lock className="w-3.5 h-3.5 text-red-500" />
+              <span className="font-semibold text-zinc-300 hover:text-white">Admin Login</span>
+            </Link>
+          </div>
+
           <div className="flex items-center mt-4 md:mt-0 space-x-3">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>

@@ -1,10 +1,12 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { portfolioClients } from '@/data/portfolio';
+import { getAllPortfolioProjects } from '@/lib/portfolioData';
 import { SectionHeader } from '@/components/shared/SectionHeader';
 import { GlassmorphicCard } from '@/components/shared/GlassmorphicCard';
 import { TextReveal } from '@/components/shared/TextReveal';
 import { ArrowUpRight } from 'lucide-react';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Our Portfolio | Zarnetic — 150+ Projects Delivered Globally',
@@ -14,12 +16,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function PortfolioPage() {
+export default async function PortfolioPage() {
+  const projects = await getAllPortfolioProjects();
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
     "name": "Zarnetic Portfolio",
-    "itemListElement": portfolioClients.map((client, index) => ({
+    "itemListElement": projects.map((client, index) => ({
       "@type": "ListItem",
       "position": index + 1,
       "item": {
@@ -31,8 +35,8 @@ export default function PortfolioPage() {
     }))
   };
 
-  const premiumClients = portfolioClients.filter(c => c.isPremium);
-  const otherClients = portfolioClients.filter(c => !c.isPremium);
+  const premiumClients = projects.filter(c => c.isPremium);
+  const otherClients = projects.filter(c => !c.isPremium);
 
   return (
     <>
@@ -96,20 +100,22 @@ export default function PortfolioPage() {
           </div>
 
           {/* All Other Clients Grid */}
-          <div className="mb-20">
-            <SectionHeader title="More" highlightedWord="Projects" />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-              {otherClients.map((client) => (
-                <GlassmorphicCard key={client.slug} hoverEffect className="p-6 bg-[#080808] border-white/5">
-                  <span className="inline-block px-2 py-1 text-[10px] font-semibold tracking-wider uppercase bg-white/5 text-zinc-400 rounded mb-4">
-                    {client.category}
-                  </span>
-                  <h4 className="text-xl font-bold mb-2 text-zinc-100">{client.name}</h4>
-                  <p className="text-sm text-zinc-500 line-clamp-3">{client.brief}</p>
-                </GlassmorphicCard>
-              ))}
+          {otherClients.length > 0 && (
+            <div className="mb-20">
+              <SectionHeader title="More" highlightedWord="Projects" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+                {otherClients.map((client) => (
+                  <GlassmorphicCard key={client.slug} hoverEffect className="p-6 bg-[#080808] border-white/5">
+                    <span className="inline-block px-2 py-1 text-[10px] font-semibold tracking-wider uppercase bg-white/5 text-zinc-400 rounded mb-4">
+                      {client.category}
+                    </span>
+                    <h4 className="text-xl font-bold mb-2 text-zinc-100">{client.name}</h4>
+                    <p className="text-sm text-zinc-500 line-clamp-3">{client.brief}</p>
+                  </GlassmorphicCard>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
           
         </div>
       </main>

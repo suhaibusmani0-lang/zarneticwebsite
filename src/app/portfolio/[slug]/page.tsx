@@ -1,20 +1,16 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getClientBySlug, getAllClientSlugs } from '@/data/portfolio';
-import { SectionHeader } from '@/components/shared/SectionHeader';
+import { getPortfolioProjectBySlug } from '@/lib/portfolioData';
 import { GlassmorphicCard } from '@/components/shared/GlassmorphicCard';
 import { TextReveal } from '@/components/shared/TextReveal';
 import { ChevronRight, ExternalLink, Calendar, ArrowRight } from 'lucide-react';
 
-export async function generateStaticParams() {
-  const slugs = getAllClientSlugs();
-  return slugs.map((slug: string) => ({ slug }));
-}
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const resolvedParams = await params;
-  const client = getClientBySlug(resolvedParams.slug);
+  const client = await getPortfolioProjectBySlug(resolvedParams.slug);
   
   if (!client || !client.caseStudy) return { title: 'Case Study Not Found' };
 
@@ -29,7 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params;
-  const client = getClientBySlug(resolvedParams.slug);
+  const client = await getPortfolioProjectBySlug(resolvedParams.slug);
   
   if (!client || !client.caseStudy) notFound();
 
@@ -201,5 +197,3 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
     </>
   );
 }
-
-

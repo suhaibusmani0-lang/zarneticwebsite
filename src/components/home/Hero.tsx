@@ -2,8 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowUpRight } from 'lucide-react';
-import { company } from '@/data/company';
+import { ArrowUpRight, Globe, Server, UserCheck, TrendingUp } from 'lucide-react';
 import { HeroBackground } from './HeroBackground';
 
 export function Hero() {
@@ -13,7 +12,7 @@ export function Hero() {
       {/* Premium CSS Animated Background */}
       <HeroBackground />
 
-      {/* Vignette Overlay to darken edges and make text pop */}
+      {/* Vignette Overlay */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_#030303_100%)] opacity-90 pointer-events-none" />
 
       {/* Main Content Layout */}
@@ -53,24 +52,56 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-xl md:text-2xl text-gray-400 mb-12 max-w-2xl font-outfit font-light"
+            className="text-xl md:text-2xl text-gray-400 mb-8 max-w-2xl font-outfit font-light"
           >
-            We don't just build software. We engineer resilient, high-performance digital ecosystems for global enterprises.
+            We don&apos;t just build software. We engineer resilient digital ecosystems, instant domain registrations, and cloud hosting for global brands.
           </motion.p>
 
+          {/* Quick Action Buttons Grid */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto"
+            className="flex flex-wrap gap-3.5 w-full items-center mb-6"
           >
             <Link
               href="/contact"
-              className="group px-8 py-4 rounded-lg bg-[#FF2020] text-white transition-all text-sm font-bold tracking-widest uppercase flex items-center justify-center gap-3 overflow-hidden relative"
+              className="group px-7 py-3.5 rounded-xl bg-[#FF2020] hover:bg-[#e01a1a] text-white transition-all text-xs font-bold tracking-widest uppercase flex items-center justify-center gap-2 shadow-lg shadow-red-950/40 relative overflow-hidden"
             >
               <span className="relative z-10">Partner With Us</span>
-              <ArrowUpRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-              <div className="absolute inset-0 h-full w-0 bg-white/20 transition-all duration-300 ease-out group-hover:w-full" />
+              <ArrowUpRight className="w-4 h-4 relative z-10 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </Link>
+
+            <Link
+              href="/domains"
+              className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white transition-all text-xs font-bold tracking-wider uppercase flex items-center justify-center gap-2 shadow-lg shadow-blue-950/40"
+            >
+              <Globe className="w-4 h-4" />
+              <span>Buy Domains</span>
+            </Link>
+
+            <Link
+              href="/hosting"
+              className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white transition-all text-xs font-bold tracking-wider uppercase flex items-center justify-center gap-2 shadow-lg shadow-purple-950/40"
+            >
+              <Server className="w-4 h-4" />
+              <span>Cloud Hosting</span>
+            </Link>
+
+            <Link
+              href="/client-portal"
+              className="px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-white transition-all text-xs font-bold tracking-wider uppercase flex items-center justify-center gap-2"
+            >
+              <UserCheck className="w-4 h-4 text-emerald-400" />
+              <span>Client Portal</span>
+            </Link>
+
+            <Link
+              href="/crm"
+              className="px-5 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white transition-all text-xs font-semibold tracking-wider uppercase flex items-center justify-center gap-2"
+            >
+              <TrendingUp className="w-4 h-4 text-blue-400" />
+              <span>CRM Portal</span>
             </Link>
           </motion.div>
         </div>
@@ -93,11 +124,11 @@ export function Hero() {
             <div className="space-y-6">
               <div>
                 <p className="text-sm text-gray-500 mb-1">Active Projects</p>
-                <p className="text-4xl font-space font-bold text-white">24</p>
+                <p className="text-4xl font-space font-bold text-white">24+</p>
               </div>
               <div className="h-px w-full bg-white/10" />
               <div>
-                <p className="text-sm text-gray-500 mb-1">Global Uptime</p>
+                <p className="text-sm text-gray-500 mb-1">Domain & Hosting SLA</p>
                 <p className="text-4xl font-space font-bold text-white">99.9%</p>
               </div>
               <div className="h-px w-full bg-white/10" />
@@ -113,6 +144,3 @@ export function Hero() {
     </section>
   );
 }
-
-
-

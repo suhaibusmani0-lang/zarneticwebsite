@@ -1,5 +1,6 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import { Hero } from '@/components/home/Hero';
+import { HomeDomainSearch } from '@/components/home/HomeDomainSearch';
 import ClientMarquee from '@/components/home/ClientMarquee';
 import { FeaturedPortfolio } from '@/components/home/FeaturedPortfolio';
 import { FeaturedServices } from '@/components/home/FeaturedServices';
@@ -11,12 +12,12 @@ import { company } from '@/data/company';
 
 export const metadata: Metadata = {
   title: 'Top Web Development & SEO Agency in Delhi | Zarnetic',
-  description: 'Zarnetic is Delhi\'s #1 premium web development, SEO, digital marketing, and software engineering agency. Specializing in high-performance websites and NGO compliance.',
-  keywords: 'Web Development Delhi, Top SEO Agency New Delhi, Digital Marketing Okhla, Software Engineering Company Jamia Nagar, Best IT Agency in Delhi, NGO Compliance Registration Delhi',
+  description: 'Zarnetic is Delhi\'s #1 premium web development, SEO, digital marketing, and software engineering agency. Specializing in high-performance websites, domain registration, cloud hosting and NGO compliance.',
+  keywords: 'Web Development Delhi, Top SEO Agency New Delhi, Digital Marketing Okhla, Software Engineering Company Jamia Nagar, Best IT Agency in Delhi, Domain Registration, Cloud Hosting Delhi',
   alternates: { canonical: 'https://zarnetic.com' },
   openGraph: {
     title: 'Top Web Development & SEO Agency in Delhi | Zarnetic',
-    description: 'Delhi\'s premier digital agency delivering custom software, SEO, and legal compliance.',
+    description: 'Delhi\'s premier digital agency delivering custom software, SEO, domain registration and cloud hosting.',
     url: 'https://zarnetic.com',
     siteName: 'Zarnetic',
     images: [{ url: '/images/og/og-banner.jpg', width: 1200, height: 630, alt: 'Zarnetic Delhi' }],
@@ -73,6 +74,7 @@ export default function HomePage() {
       />
       <main className="flex min-h-screen flex-col items-center w-full bg-[#030303]">
         <Hero />
+        <HomeDomainSearch />
         <ClientMarquee />
         <FeaturedPortfolio />
         <FeaturedServices />
@@ -83,4 +85,3 @@ export default function HomePage() {
     </>
   );
 }
-
