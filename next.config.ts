@@ -1,6 +1,7 @@
 ﻿import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   images: {
     unoptimized: true,
     remotePatterns: [
@@ -45,3 +46,5 @@ const nextConfig: NextConfig = {
 }
 
 export default nextConfig
+
+import('@opennextjs/cloudflare').then(m => m.initOpenNextCloudflareForDev());
