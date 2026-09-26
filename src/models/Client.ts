@@ -1,4 +1,4 @@
-﻿import mongoose, { Schema, Document, Model } from 'mongoose'
+import mongoose, { Schema, Document, Model } from 'mongoose'
 
 export interface IClientDocument {
   title: string
@@ -43,6 +43,11 @@ export interface IClient extends Document {
   notes?: string
   convertedFromLeadId?: mongoose.Types.ObjectId
   totalSpent: number
+  billingCycle?: 'monthly' | 'quarterly' | 'half_yearly' | 'yearly'
+  nextBillingDate?: Date
+  paymentStatus?: 'paid' | 'pending' | 'overdue'
+  lastPaymentDate?: Date
+  lastInvoiceNumber?: string
   createdAt: Date
   updatedAt: Date
 }
@@ -109,6 +114,19 @@ const ClientSchema = new Schema<IClient>(
     notes: { type: String },
     convertedFromLeadId: { type: Schema.Types.ObjectId, ref: 'Lead' },
     totalSpent: { type: Number, default: 0 },
+    billingCycle: {
+      type: String,
+      enum: ['monthly', 'quarterly', 'half_yearly', 'yearly'],
+      default: 'yearly',
+    },
+    nextBillingDate: { type: Date },
+    paymentStatus: {
+      type: String,
+      enum: ['paid', 'pending', 'overdue'],
+      default: 'paid',
+    },
+    lastPaymentDate: { type: Date },
+    lastInvoiceNumber: { type: String },
   },
   {
     timestamps: true,
