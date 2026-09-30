@@ -44,6 +44,11 @@ export interface IClient extends Document {
   convertedFromLeadId?: mongoose.Types.ObjectId
   totalSpent: number
   billingCycle?: 'monthly' | 'quarterly' | 'half_yearly' | 'yearly'
+  billingAmount?: number
+  domainPrice?: number
+  hostingMaintenancePrice?: number
+  hostingMaintenanceExpiryDate?: Date
+  dueAmount?: number
   nextBillingDate?: Date
   paymentStatus?: 'paid' | 'pending' | 'overdue'
   lastPaymentDate?: Date
@@ -119,6 +124,11 @@ const ClientSchema = new Schema<IClient>(
       enum: ['monthly', 'quarterly', 'half_yearly', 'yearly'],
       default: 'yearly',
     },
+    billingAmount: { type: Number, default: 0 },
+    domainPrice: { type: Number, default: 0 },
+    hostingMaintenancePrice: { type: Number, default: 0 },
+    hostingMaintenanceExpiryDate: { type: Date },
+    dueAmount: { type: Number, default: 0 },
     nextBillingDate: { type: Date },
     paymentStatus: {
       type: String,

@@ -15,7 +15,10 @@ import {
   Calendar,
   CheckCircle2,
   DollarSign,
+  FileText,
+  AlertCircle,
 } from 'lucide-react'
+import { CrmInvoiceModal } from './CrmInvoiceModal'
 
 interface RenewalItem {
   clientId: string
@@ -24,10 +27,13 @@ interface RenewalItem {
   phone?: string
   email: string
   item: string
-  type: 'Domain' | 'Hosting' | 'AMC'
+  type: 'Domain' | 'Hosting' | 'AMC' | 'Hosting + AMC'
   amount?: number
+  dueAmount?: number
+  billingCycle?: 'monthly' | 'quarterly' | 'half_yearly' | 'yearly'
   expiryDate: string
   daysLeft: number
+  overdueDays?: number
   status: 'expired' | 'critical' | 'upcoming'
 }
 
@@ -51,7 +57,8 @@ export function CrmRenewals() {
     upcomingBirthdays: BirthdayItem[]
   } | null>(null)
   const [loading, setLoading] = useState(true)
-  const [activeFilter, setActiveFilter] = useState<'all' | 'domains' | 'hosting' | 'amc' | 'birthdays'>('all')
+  const [activeFilter, setActiveFilter] = useState<'all' | 'domains' | 'amc' | 'birthdays'>('all')
+  const [invoiceClient, setInvoiceClient] = useState<any | null>(null)
 
   const fetchRenewals = async () => {
     setLoading(true)
@@ -85,8 +92,18 @@ export function CrmRenewals() {
       year: 'numeric',
     })
 
+    const overdueNote =
+      item.daysLeft < 0
+        ? `*ALREADY EXPIRED (${Math.abs(item.daysLeft)} dino se bakaya)*`
+        : `scheduled in ${item.daysLeft} days`
+
     const message = encodeURIComponent(
-      `Hello ${item.clientName},\n\nThis is an urgent service notice from Zarnetic.\nYour ${item.type} [${item.item}] is scheduled to expire on ${formattedDate} (${item.daysLeft < 0 ? 'ALREADY EXPIRED' : `in ${item.daysLeft} days`}).\n\nTo prevent website disruption or domain suspension, please renew your plan online:\nhttps://zarnetic.com/client-portal\n\nOr reply to this message for immediate assistance.\n\nBest regards,\nBilling Support Desk, Zarnetic`
+      `Hello ${item.clientName},\n\nThis is an official renewal & billing alert from Zarnetic.\n` +
+      `Your ${item.type} [${item.item}] is ${overdueNote} (Date: ${formattedDate}).\n` +
+      (item.amount ? `• Renewal Amount: ₹${item.amount.toLocaleString('en-IN')}\n` : '') +
+      (item.dueAmount && item.dueAmount > 0 ? `• Previous Outstanding Due: ₹${item.dueAmount.toLocaleString('en-IN')}\n` : '') +
+      `\nTo prevent website downtime or domain suspension, please renew your plan online:\nhttps://zarnetic.com/client-portal\n\n` +
+      `Or reply here to receive an instant UPI scan link.\n\nBest regards,\nBilling Support Desk, Zarnetic`
     )
     window.open(`https://wa.me/${cleanPhone}?text=${message}`, '_blank')
   }
@@ -104,17 +121,45 @@ export function CrmRenewals() {
     window.open(`https://wa.me/${cleanPhone}?text=${message}`, '_blank')
   }
 
+  const handleMarkPaid = async (r: RenewalItem) => {
+    const cycle = r.billingCycle || 'yearly'
+    if (
+      !confirm(
+        `Mark payment as PAID for "${r.clientName}"?\nThis will clear any due amount and advance their renewal date by ${cycle}.`
+      )
+    ) {
+      return
+    }
+
+    try {
+      const res = await fetch(`/api/crm/clients/${r.clientId}/mark-paid`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          billingCycle: cycle,
+          paidAmount: r.amount || r.dueAmount || 0,
+        }),
+      })
+
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error || 'Failed to record payment')
+
+      alert(json.message || 'Payment recorded successfully!')
+      fetchRenewals()
+    } catch (err: any) {
+      alert(err.message || 'Error updating payment')
+    }
+  }
+
   const allRenewals: RenewalItem[] = [
     ...(data?.domainRenewals || []),
-    ...(data?.hostingRenewals || []),
     ...(data?.amcRenewals || []),
+    ...(data?.hostingRenewals || []),
   ].sort((a, b) => a.daysLeft - b.daysLeft)
 
   const displayedRenewals =
     activeFilter === 'domains'
       ? data?.domainRenewals || []
-      : activeFilter === 'hosting'
-      ? data?.hostingRenewals || []
       : activeFilter === 'amc'
       ? data?.amcRenewals || []
       : allRenewals
@@ -139,27 +184,11 @@ export function CrmRenewals() {
           <p className="text-[11px] text-zinc-500 mt-1">Expiring within 30 days</p>
         </div>
 
-        {/* Hosting Expiries */}
+        {/* Hosting + Maintenance Expiries */}
         <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-5 shadow-xl">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
-              Hosting Renewals
-            </span>
-            <div className="p-2 rounded-xl bg-purple-500/10 text-purple-400">
-              <Server className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-3xl font-bold font-space text-white">
-            {data?.stats?.hostingRenewalsCount || 0}
-          </div>
-          <p className="text-[11px] text-zinc-500 mt-1">Cloud plans up for renewal</p>
-        </div>
-
-        {/* AMC Expiries */}
-        <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-5 shadow-xl">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
-              AMC Contracts
+            <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
+              Hosting + AMC Contracts
             </span>
             <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400">
               <ShieldCheck className="w-4 h-4" />
@@ -168,7 +197,23 @@ export function CrmRenewals() {
           <div className="text-3xl font-bold font-space text-white">
             {data?.stats?.amcRenewalsCount || 0}
           </div>
-          <p className="text-[11px] text-zinc-500 mt-1">Annual maintenance up for bill</p>
+          <p className="text-[11px] text-zinc-500 mt-1">Hosting + AMC combined packages</p>
+        </div>
+
+        {/* Total Overdue */}
+        <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-5 shadow-xl">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-semibold text-red-400 uppercase tracking-wider">
+              Overdue / Bakaya Expiries
+            </span>
+            <div className="p-2 rounded-xl bg-red-500/10 text-red-400">
+              <AlertCircle className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="text-3xl font-bold font-space text-red-400">
+            {allRenewals.filter((r) => r.daysLeft < 0).length}
+          </div>
+          <p className="text-[11px] text-zinc-500 mt-1">Clients with overdue renewal dates</p>
         </div>
 
         {/* Birthdays */}
@@ -194,8 +239,7 @@ export function CrmRenewals() {
           {[
             { id: 'all', label: `All Expiries (${allRenewals.length})` },
             { id: 'domains', label: `Domains (${data?.stats?.domainRenewalsCount || 0})` },
-            { id: 'hosting', label: `Hosting (${data?.stats?.hostingRenewalsCount || 0})` },
-            { id: 'amc', label: `AMC Contracts (${data?.stats?.amcRenewalsCount || 0})` },
+            { id: 'amc', label: `Hosting + AMC (${data?.stats?.amcRenewalsCount || 0})` },
             { id: 'birthdays', label: `🎂 Birthdays (${data?.stats?.birthdaysCount || 0})` },
           ].map((tab) => (
             <button
@@ -220,7 +264,7 @@ export function CrmRenewals() {
         </button>
       </div>
 
-      {/* Birthdays Queue (When Birthdays Filter is Active) */}
+      {/* Birthdays Queue */}
       {activeFilter === 'birthdays' ? (
         <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden shadow-xl">
           <div className="p-5 border-b border-white/10 flex items-center justify-between">
@@ -228,7 +272,7 @@ export function CrmRenewals() {
               <Cake className="w-4 h-4 text-pink-400" />
               <span>Upcoming Client Birthdays</span>
             </h3>
-            <span className="text-xs text-zinc-500">Wish clients to strengthen long-term agency relationships</span>
+            <span className="text-xs text-zinc-500">Wish clients to strengthen agency relations</span>
           </div>
 
           {!data?.upcomingBirthdays || data.upcomingBirthdays.length === 0 ? (
@@ -287,16 +331,17 @@ export function CrmRenewals() {
                 <tr>
                   <th className="py-3.5 px-4">Service & Plan</th>
                   <th className="py-3.5 px-4">Client Name</th>
+                  <th className="py-3.5 px-4">Cycle & Amount</th>
                   <th className="py-3.5 px-4">Expiry Date</th>
-                  <th className="py-3.5 px-4">Days Left</th>
+                  <th className="py-3.5 px-4">Due & Bakaya Days</th>
                   <th className="py-3.5 px-4">Status</th>
-                  <th className="py-3.5 px-4 text-right">Action</th>
+                  <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
                 {displayedRenewals.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="py-12 text-center text-zinc-500">
+                    <td colSpan={7} className="py-12 text-center text-zinc-500">
                       No upcoming expiries found in this category!
                     </td>
                   </tr>
@@ -307,21 +352,30 @@ export function CrmRenewals() {
                         <div className="font-bold text-white text-sm flex items-center gap-2">
                           {r.type === 'Domain' ? (
                             <Globe className="w-4 h-4 text-blue-400" />
-                          ) : r.type === 'Hosting' ? (
-                            <Server className="w-4 h-4 text-purple-400" />
                           ) : (
                             <ShieldCheck className="w-4 h-4 text-emerald-400" />
                           )}
                           <span>{r.item}</span>
                         </div>
                         <div className="text-[11px] text-zinc-500 uppercase tracking-wider mt-0.5">
-                          {r.type} {r.amount ? `(₹${r.amount})` : ''}
+                          {r.type} {r.amount ? `(₹${r.amount.toLocaleString('en-IN')})` : ''}
                         </div>
                       </td>
 
                       <td className="py-4 px-4">
                         <div className="font-semibold text-zinc-200">{r.clientName}</div>
                         <div className="text-zinc-500 text-[11px]">{r.company || r.email}</div>
+                      </td>
+
+                      <td className="py-4 px-4 space-y-0.5">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                          {r.billingCycle || 'Yearly'}
+                        </span>
+                        {r.amount ? (
+                          <div className="text-white font-bold text-xs mt-1">
+                            ₹{r.amount.toLocaleString('en-IN')}
+                          </div>
+                        ) : null}
                       </td>
 
                       <td className="py-4 px-4 text-zinc-300">
@@ -332,22 +386,26 @@ export function CrmRenewals() {
                         })}
                       </td>
 
+                      {/* Due Amount & Bakaya Din */}
                       <td className="py-4 px-4">
-                        <span
-                          className={`font-bold ${
-                            r.daysLeft < 0
-                              ? 'text-red-500'
-                              : r.daysLeft <= 7
-                              ? 'text-amber-400'
-                              : 'text-zinc-300'
-                          }`}
-                        >
-                          {r.daysLeft < 0
-                            ? `Expired ${Math.abs(r.daysLeft)} days ago`
-                            : r.daysLeft === 0
-                            ? 'Expires Today!'
-                            : `${r.daysLeft} days remaining`}
-                        </span>
+                        {r.daysLeft < 0 ? (
+                          <div className="space-y-0.5">
+                            <span className="font-bold text-red-500 text-xs block">
+                              🔴 {Math.abs(r.daysLeft)} Din Se Bakaya
+                            </span>
+                            {r.dueAmount ? (
+                              <span className="text-[11px] text-red-400 font-semibold">
+                                Due: ₹{r.dueAmount.toLocaleString('en-IN')}
+                              </span>
+                            ) : null}
+                          </div>
+                        ) : r.daysLeft === 0 ? (
+                          <span className="font-bold text-amber-400">Expires Today!</span>
+                        ) : (
+                          <span className="font-semibold text-zinc-300">
+                            {r.daysLeft} days remaining
+                          </span>
+                        )}
                       </td>
 
                       <td className="py-4 px-4">
@@ -365,13 +423,50 @@ export function CrmRenewals() {
                       </td>
 
                       <td className="py-4 px-4 text-right">
-                        <button
-                          onClick={() => sendReminder(r)}
-                          className="px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 font-semibold text-xs flex items-center gap-1.5 ml-auto transition-colors"
-                        >
-                          <Send className="w-3 h-3" />
-                          <span>WhatsApp Reminder</span>
-                        </button>
+                        <div className="flex items-center justify-end gap-1.5">
+                          {/* Generate Bill Modal */}
+                          <button
+                            onClick={() =>
+                              setInvoiceClient({
+                                _id: r.clientId,
+                                name: r.clientName,
+                                email: r.email,
+                                phone: r.phone,
+                                company: r.company,
+                                domainName: r.type === 'Domain' ? r.item : '',
+                                domainPrice: r.type === 'Domain' ? r.amount : 1200,
+                                hostingMaintenancePrice: r.type !== 'Domain' ? r.amount : 12000,
+                                billingCycle: r.billingCycle || 'yearly',
+                                dueAmount: r.dueAmount || r.amount || 0,
+                                nextBillingDate: r.expiryDate,
+                                overdueDays: r.daysLeft < 0 ? Math.abs(r.daysLeft) : 0,
+                              })
+                            }
+                            title="Generate 18% GST Tax Invoice / PDF"
+                            className="px-2.5 py-1.5 rounded-xl bg-blue-600/15 hover:bg-blue-600/25 border border-blue-500/30 text-blue-400 font-bold text-xs flex items-center gap-1 transition-all"
+                          >
+                            <FileText className="w-3.5 h-3.5" />
+                            <span>Bill (GST)</span>
+                          </button>
+
+                          {/* Quick Mark Paid */}
+                          <button
+                            onClick={() => handleMarkPaid(r)}
+                            title="Mark as Paid & Advance Renewal Date"
+                            className="p-1.5 rounded-xl bg-emerald-600/15 hover:bg-emerald-600/25 border border-emerald-500/30 text-emerald-400 transition-colors"
+                          >
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                          </button>
+
+                          {/* Send WhatsApp Reminder */}
+                          <button
+                            onClick={() => sendReminder(r)}
+                            title="Send WhatsApp Renewal Notice"
+                            className="p-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 transition-colors"
+                          >
+                            <Send className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -380,6 +475,18 @@ export function CrmRenewals() {
             </table>
           </div>
         </div>
+      )}
+
+      {/* Invoice Modal in Renewals */}
+      {invoiceClient && (
+        <CrmInvoiceModal
+          client={invoiceClient}
+          onClose={() => setInvoiceClient(null)}
+          onMarkPaidSuccess={() => {
+            setInvoiceClient(null)
+            fetchRenewals()
+          }}
+        />
       )}
     </div>
   )
