@@ -1,16 +1,39 @@
-﻿import crypto from 'crypto'
+import crypto from 'crypto'
 import { NextRequest } from 'next/server'
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@zarnetic.com'
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Zarnetic@Admin786'
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'zarnetic@gmail.com'
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Shaib786@@'
 const AUTH_SECRET = process.env.ADMIN_SECRET || 'zarnetic_secret_salt_2026_super_secure'
 
 export function verifyAdminCredentials(email: string, pass: string): boolean {
   if (!email || !pass) return false
-  return (
-    email.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase() &&
-    pass.trim() === ADMIN_PASSWORD
-  )
+  const cleanEmail = email.trim().toLowerCase()
+  const cleanPass = pass.trim()
+
+  const envEmail = (process.env.ADMIN_EMAIL || '').trim().toLowerCase()
+  const envPass = (process.env.ADMIN_PASSWORD || '').trim()
+
+  // Direct check for zarnetic@gmail.com and Shaib786@@
+  if (cleanEmail === 'zarnetic@gmail.com' && cleanPass === 'Shaib786@@') {
+    return true
+  }
+
+  // Match environment variable if provided
+  if (envEmail && envPass && cleanEmail === envEmail && cleanPass === envPass) {
+    return true
+  }
+
+  // Match fallback default
+  if (cleanEmail === ADMIN_EMAIL.toLowerCase() && cleanPass === ADMIN_PASSWORD) {
+    return true
+  }
+
+  // Keep compatibility for admin@zarnetic.com
+  if (cleanEmail === 'admin@zarnetic.com' && cleanPass === 'Zarnetic@Admin786') {
+    return true
+  }
+
+  return false
 }
 
 export function createAdminSessionToken(): string {
