@@ -2,7 +2,7 @@ import crypto from 'crypto'
 import { NextRequest } from 'next/server'
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'zarnetic@gmail.com'
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Shaib786@@'
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Suhaib786@@'
 const AUTH_SECRET = process.env.ADMIN_SECRET || 'zarnetic_secret_salt_2026_super_secure'
 
 export function verifyAdminCredentials(email: string, pass: string): boolean {
@@ -13,8 +13,14 @@ export function verifyAdminCredentials(email: string, pass: string): boolean {
   const envEmail = (process.env.ADMIN_EMAIL || '').trim().toLowerCase()
   const envPass = (process.env.ADMIN_PASSWORD || '').trim()
 
-  // Direct check for zarnetic@gmail.com and Shaib786@@
-  if (cleanEmail === 'zarnetic@gmail.com' && cleanPass === 'Shaib786@@') {
+  // Match zarnetic@gmail.com with Suhaib786@@ (or Shaib786@@)
+  if (
+    cleanEmail === 'zarnetic@gmail.com' &&
+    (cleanPass === 'Suhaib786@@' ||
+      cleanPass === 'Shaib786@@' ||
+      cleanPass.toLowerCase() === 'suhaib786@@' ||
+      cleanPass.toLowerCase() === 'shaib786@@')
+  ) {
     return true
   }
 
