@@ -23,19 +23,24 @@ if (!global.mongooseCache) {
 
 export async function connectDB() {
   if (!MONGODB_URI || MONGODB_URI.includes('<db_password>')) {
-    throw new Error(
-      'MongoDB password is not set! Please replace <db_password> in .env.local with your MongoDB Atlas password.'
-    )
+    throw new Error('MongoDB URI is not configured')
   }
 
   if (cached.conn && mongoose.connection.readyState === 1) {
     return cached.conn
   }
 
+  if (cached.conn && mongoose.connection.readyState !== 1) {
+    cached.conn = null
+    cached.promise = null
+  }
+
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 3000,
+      socketTimeoutMS: 5000,
+      connectTimeoutMS: 5000,
     }
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((m) => {
@@ -43,6 +48,7 @@ export async function connectDB() {
       return m
     }).catch((err) => {
       console.error('❌ MongoDB Connection Error:', err.message)
+      cached.conn = null
       cached.promise = null
       throw new Error(`MongoDB connection failed: ${err.message}`)
     })
@@ -51,6 +57,7 @@ export async function connectDB() {
   try {
     cached.conn = await cached.promise
   } catch (e) {
+    cached.conn = null
     cached.promise = null
     throw e
   }

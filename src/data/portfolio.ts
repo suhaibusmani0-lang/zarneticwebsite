@@ -2,6 +2,8 @@ export interface PortfolioClient {
   slug: string
   name: string
   url?: string
+  logoUrl?: string
+  bannerUrl?: string
   isPremium: boolean
   category: string
   brief: string
@@ -21,6 +23,7 @@ export const portfolioClients: PortfolioClient[] = [
   {
     slug: 'swift-fuel-inc',
     name: 'Swift Fuel Inc',
+    logoUrl: 'https://res.cloudinary.com/tlqdif3h/image/upload/v1790795075/Screenshot_2026-10-01_003218.png',
     url: 'https://swiftfuelinc.com/',
     isPremium: true,
     category: 'Energy & Logistics',

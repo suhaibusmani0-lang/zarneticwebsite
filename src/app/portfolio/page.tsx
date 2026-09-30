@@ -74,15 +74,26 @@ export default async function PortfolioPage() {
             <SectionHeader title="Featured" highlightedWord="Work" subtitle="Deep dives into some of our most impactful projects." />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
               {premiumClients.map((client) => (
-                <GlassmorphicCard key={client.slug} className="group overflow-hidden bg-[#080808] border-white/5 flex flex-col h-full">
-                  <div className="p-8 flex-grow">
-                    <div className="flex justify-between items-start mb-6">
-                      <span className="px-3 py-1 text-xs font-medium bg-white/10 text-white rounded-full">
-                        {client.category}
-                      </span>
+                <GlassmorphicCard key={client.slug} className="group overflow-hidden bg-[#080808] border-white/5 flex flex-col h-full hover:border-white/15 transition-all">
+                  <div className="p-8 flex-grow flex flex-col justify-between">
+                    <div>
+                      <div className="flex justify-between items-center mb-6">
+                        <span className="px-3 py-1 text-xs font-medium bg-white/10 text-white rounded-full">
+                          {client.category}
+                        </span>
+                        {client.logoUrl && (
+                          <div className="h-10 px-3 py-1 bg-white/5 rounded-xl border border-white/10 flex items-center justify-center">
+                            <img
+                              src={client.logoUrl}
+                              alt={`${client.name} logo`}
+                              className="max-h-7 max-w-[120px] object-contain filter brightness-95 group-hover:brightness-100 transition-all"
+                            />
+                          </div>
+                        )}
+                      </div>
+                      <h3 className="text-3xl font-bold mb-4">{client.name}</h3>
+                      <p className="text-zinc-400 mb-8 text-lg">{client.brief}</p>
                     </div>
-                    <h3 className="text-3xl font-bold mb-4">{client.name}</h3>
-                    <p className="text-zinc-400 mb-8 text-lg">{client.brief}</p>
                     
                     {client.caseStudy && (
                       <Link 
@@ -105,12 +116,25 @@ export default async function PortfolioPage() {
               <SectionHeader title="More" highlightedWord="Projects" />
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
                 {otherClients.map((client) => (
-                  <GlassmorphicCard key={client.slug} hoverEffect className="p-6 bg-[#080808] border-white/5">
-                    <span className="inline-block px-2 py-1 text-[10px] font-semibold tracking-wider uppercase bg-white/5 text-zinc-400 rounded mb-4">
-                      {client.category}
-                    </span>
-                    <h4 className="text-xl font-bold mb-2 text-zinc-100">{client.name}</h4>
-                    <p className="text-sm text-zinc-500 line-clamp-3">{client.brief}</p>
+                  <GlassmorphicCard key={client.slug} hoverEffect className="p-6 bg-[#080808] border-white/5 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="inline-block px-2 py-1 text-[10px] font-semibold tracking-wider uppercase bg-white/5 text-zinc-400 rounded">
+                          {client.category}
+                        </span>
+                        {client.logoUrl && (
+                          <div className="h-7 px-2 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center">
+                            <img
+                              src={client.logoUrl}
+                              alt={client.name}
+                              className="max-h-5 max-w-[80px] object-contain"
+                            />
+                          </div>
+                        )}
+                      </div>
+                      <h4 className="text-xl font-bold mb-2 text-zinc-100">{client.name}</h4>
+                      <p className="text-sm text-zinc-500 line-clamp-3">{client.brief}</p>
+                    </div>
                   </GlassmorphicCard>
                 ))}
               </div>

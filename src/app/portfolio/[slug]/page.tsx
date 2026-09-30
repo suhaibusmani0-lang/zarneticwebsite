@@ -81,10 +81,23 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
                 </span>
               )}
             </div>
-            <TextReveal 
-              text={client.name} 
-              className="text-5xl md:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60" 
-            />
+
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-6">
+              <TextReveal 
+                text={client.name} 
+                className="text-5xl md:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60" 
+              />
+              {client.logoUrl && (
+                <div className="h-16 px-6 py-2 bg-white/[0.04] rounded-2xl border border-white/10 flex items-center justify-center shadow-lg shrink-0 self-start sm:self-center">
+                  <img
+                    src={client.logoUrl}
+                    alt={`${client.name} Logo`}
+                    className="max-h-12 max-w-[160px] object-contain filter brightness-95"
+                  />
+                </div>
+              )}
+            </div>
+
             {study.heroTagline && (
               <p className="text-2xl md:text-3xl text-zinc-300 font-light leading-relaxed">
                 {study.heroTagline}
