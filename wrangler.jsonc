@@ -1,7 +1,8 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"main": ".open-next/worker.js",
-	"name": "zarneticwebsite",
+	"name": "zarneticwebsite1",
+	"account_id": "fbd7c7bebdc3b418c27089e88f3267bf",
 	"compatibility_date": "2026-09-25",
 	"compatibility_flags": [
 		"nodejs_compat",
@@ -16,7 +17,7 @@
 			// Self-reference service binding, the service name must match the worker name
 			// see https://opennext.js.org/cloudflare/caching
 			"binding": "WORKER_SELF_REFERENCE",
-			"service": "zarneticwebsite"
+			"service": "zarneticwebsite1"
 		}
 	],
 	"images": {
