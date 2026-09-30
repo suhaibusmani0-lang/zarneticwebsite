@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import React, { useState } from 'react'
 import { FileText, Printer, CheckCircle2 } from 'lucide-react'

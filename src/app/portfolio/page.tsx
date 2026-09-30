@@ -82,11 +82,11 @@ export default async function PortfolioPage() {
                           {client.category}
                         </span>
                         {client.logoUrl && (
-                          <div className="h-10 px-3 py-1 bg-white/5 rounded-xl border border-white/10 flex items-center justify-center">
+                          <div className="h-12 w-36 px-3 py-1.5 bg-white/[0.04] rounded-xl border border-white/10 flex items-center justify-center shrink-0 shadow-inner">
                             <img
                               src={client.logoUrl}
                               alt={`${client.name} logo`}
-                              className="max-h-7 max-w-[120px] object-contain filter brightness-95 group-hover:brightness-100 transition-all"
+                              className="max-h-8 max-w-[125px] w-auto h-auto object-contain filter brightness-95 group-hover:brightness-105 transition-all"
                             />
                           </div>
                         )}
@@ -123,11 +123,11 @@ export default async function PortfolioPage() {
                           {client.category}
                         </span>
                         {client.logoUrl && (
-                          <div className="h-7 px-2 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center">
+                          <div className="h-9 w-28 px-2 py-1 bg-white/[0.04] rounded-lg border border-white/10 flex items-center justify-center shrink-0 shadow-inner">
                             <img
                               src={client.logoUrl}
                               alt={client.name}
-                              className="max-h-5 max-w-[80px] object-contain"
+                              className="max-h-6 max-w-[95px] w-auto h-auto object-contain"
                             />
                           </div>
                         )}

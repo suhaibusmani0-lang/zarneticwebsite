@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { connectDB } from '@/lib/db'
 import { Client } from '@/models/Client'
 import { Activity } from '@/models/Activity'
+import { formatDateDMY } from '@/lib/dateUtils'
 
 export async function POST(
   request: NextRequest,
@@ -100,7 +101,7 @@ export async function POST(
 
     await Activity.create({
       action: 'Payment Received & Renewed',
-      description: `Marked as paid for "${client.name}" (${cycleLabel}). Next renewal date updated to ${newNextDate.toLocaleDateString('en-IN')}`,
+      description: `Marked as paid for "${client.name}" (${cycleLabel}). Next renewal date updated to ${formatDateDMY(newNextDate)}`,
       entityType: 'client',
       entityId: String(id),
       user: 'Admin',
@@ -110,7 +111,7 @@ export async function POST(
       success: true,
       client,
       newNextDate,
-      message: `Payment recorded! Next billing date updated to ${newNextDate.toLocaleDateString('en-IN')}`,
+      message: `Payment recorded! Next billing date updated to ${formatDateDMY(newNextDate)}`,
     })
   } catch (error: any) {
     console.error('Mark paid error:', error)

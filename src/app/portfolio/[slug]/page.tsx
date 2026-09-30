@@ -88,11 +88,11 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
                 className="text-5xl md:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60" 
               />
               {client.logoUrl && (
-                <div className="h-16 px-6 py-2 bg-white/[0.04] rounded-2xl border border-white/10 flex items-center justify-center shadow-lg shrink-0 self-start sm:self-center">
+                <div className="h-16 w-44 px-4 py-2 bg-white/[0.04] rounded-2xl border border-white/10 flex items-center justify-center shadow-lg shrink-0 self-start sm:self-center">
                   <img
                     src={client.logoUrl}
                     alt={`${client.name} Logo`}
-                    className="max-h-12 max-w-[160px] object-contain filter brightness-95"
+                    className="max-h-11 max-w-[150px] w-auto h-auto object-contain filter brightness-95"
                   />
                 </div>
               )}

@@ -27,6 +27,7 @@ import {
   ArrowUpRight,
 } from 'lucide-react'
 import { CrmInvoiceModal } from './CrmInvoiceModal'
+import { formatDateDMY } from '@/lib/dateUtils'
 
 interface Service {
   name: string
@@ -316,14 +317,14 @@ export function CrmClients() {
     const cleanPhone = phone.startsWith('91') || phone.length > 10 ? phone : `91${phone}`
 
     const domainExp = client.domainExpiryDate
-      ? new Date(client.domainExpiryDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+      ? formatDateDMY(client.domainExpiryDate)
       : null
     const hmExp = (client.hostingMaintenanceExpiryDate || client.amcExpiryDate || client.hostingExpiryDate)
-      ? new Date(client.hostingMaintenanceExpiryDate || client.amcExpiryDate || client.hostingExpiryDate || '').toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+      ? formatDateDMY(client.hostingMaintenanceExpiryDate || client.amcExpiryDate || client.hostingExpiryDate)
       : null
 
     const totalDue = client.dueAmount || client.billingAmount || 0
-    const overdueText = client.overdueDays && client.overdueDays > 0 ? ` (${client.overdueDays} dino se bakaya)` : ''
+    const overdueText = client.overdueDays && client.overdueDays > 0 ? ` (${client.overdueDays} days overdue)` : ''
 
     const message = encodeURIComponent(
       `Hello ${client.name},\n\nThis is an official renewal reminder from Zarnetic.\n` +
@@ -429,7 +430,7 @@ export function CrmClients() {
                   <th className="py-3.5 px-4">Domain & Expiry</th>
                   <th className="py-3.5 px-4">Hosting + Maintenance (AMC)</th>
                   <th className="py-3.5 px-4">Cycle & Amount</th>
-                  <th className="py-3.5 px-4">Due & Bakaya Days</th>
+                  <th className="py-3.5 px-4">Due Balance & Overdue Days</th>
                   <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
               </thead>
@@ -484,7 +485,7 @@ export function CrmClients() {
                           <div className="flex items-center gap-1.5 text-zinc-400 text-[11px]">
                             <Cake className="w-3 h-3 text-pink-400" />
                             <span>
-                              DOB: {new Date(c.dob).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                              DOB: {formatDateDMY(c.dob)}
                             </span>
                           </div>
                         )}
@@ -505,7 +506,7 @@ export function CrmClients() {
                               {c.domainExpiryDate && (
                                 <div className="flex items-center gap-1 text-amber-400">
                                   <Clock className="w-3 h-3" />
-                                  <span>Exp: {new Date(c.domainExpiryDate).toLocaleDateString('en-IN')}</span>
+                                  <span>Exp: {formatDateDMY(c.domainExpiryDate)}</span>
                                 </div>
                               )}
                             </div>
@@ -515,7 +516,7 @@ export function CrmClients() {
                         )}
                       </td>
 
-                      {/* Hosting + Maintenance (Combined Ek Sath) */}
+                      {/* Hosting + Maintenance (Combined AMC Package) */}
                       <td className="py-4 px-4">
                         {hmPrice > 0 || hmDate ? (
                           <div>
@@ -527,7 +528,7 @@ export function CrmClients() {
                             {hmDate && (
                               <div className="text-[11px] text-zinc-400 mt-1 flex items-center gap-1">
                                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                                <span>Renewal: {new Date(hmDate).toLocaleDateString('en-IN')}</span>
+                                <span>Renewal: {formatDateDMY(hmDate)}</span>
                               </div>
                             )}
                           </div>
@@ -549,12 +550,12 @@ export function CrmClients() {
                         {c.nextBillingDate && (
                           <div className="text-[11px] text-zinc-400 flex items-center gap-1">
                             <Calendar className="w-3.5 h-3.5 text-zinc-500" />
-                            <span>Next: {new Date(c.nextBillingDate).toLocaleDateString('en-IN')}</span>
+                            <span>Next: {formatDateDMY(c.nextBillingDate)}</span>
                           </div>
                         )}
                       </td>
 
-                      {/* Due Amount & Bakaya Din */}
+                      {/* Due Amount & Overdue Days */}
                       <td className="py-4 px-4">
                         {isDue ? (
                           <div className="space-y-1">
@@ -564,7 +565,7 @@ export function CrmClients() {
                             </div>
                             <div className="text-[11px] font-bold text-red-400">
                               {c.overdueDays && c.overdueDays > 0
-                                ? `🔴 ${c.overdueDays} Din Se Bakaya`
+                                ? `🔴 ${c.overdueDays} Days Overdue`
                                 : '🔴 Payment Overdue'}
                             </div>
                           </div>
@@ -796,11 +797,11 @@ export function CrmClients() {
                 </div>
               </div>
 
-              {/* Section 3: Hosting + Maintenance (Combined Ek Sath) */}
+              {/* Section 3: Hosting + Maintenance (Combined AMC Package) */}
               <div className="p-3.5 bg-zinc-900/50 border border-white/5 rounded-xl space-y-3">
                 <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
                   <Server className="w-3.5 h-3.5" />
-                  <span>3. Hosting + Maintenance (AMC) Charge Ek Sath</span>
+                  <span>3. Hosting + Maintenance (AMC Package)</span>
                 </span>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
@@ -843,11 +844,11 @@ export function CrmClients() {
                 </div>
               </div>
 
-              {/* Section 4: Billing Cycle, Package Amount & Bakaya (Due) */}
+              {/* Section 4: Billing Cycle, Package Amount & Outstanding Balance */}
               <div className="p-3.5 bg-zinc-900/50 border border-white/5 rounded-xl space-y-3">
                 <span className="text-[11px] font-bold text-purple-400 uppercase tracking-wider block flex items-center gap-1.5">
                   <DollarSign className="w-3.5 h-3.5" />
-                  <span>4. Billing Cycle, Package Fee & Bakaya (Due Amount)</span>
+                  <span>4. Billing Cycle, Package Fee & Outstanding Balance</span>
                 </span>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div>
@@ -879,7 +880,7 @@ export function CrmClients() {
 
                   <div>
                     <label className="block text-red-400 mb-1 font-semibold">
-                      Bakaya / Due Amount (₹)
+                      Outstanding / Due Balance (₹)
                     </label>
                     <input
                       type="number"
@@ -909,7 +910,7 @@ export function CrmClients() {
                     >
                       <option value="paid">Paid (All Clear)</option>
                       <option value="pending">Pending</option>
-                      <option value="overdue">Overdue (Bakaya)</option>
+                      <option value="overdue">Overdue (Unpaid)</option>
                     </select>
                   </div>
 

@@ -19,6 +19,7 @@ import {
   AlertCircle,
 } from 'lucide-react'
 import { CrmInvoiceModal } from './CrmInvoiceModal'
+import { formatDateDMY } from '@/lib/dateUtils'
 
 interface RenewalItem {
   clientId: string
@@ -86,15 +87,11 @@ export function CrmRenewals() {
       return
     }
     const cleanPhone = phone.startsWith('91') || phone.length > 10 ? phone : `91${phone}`
-    const formattedDate = new Date(item.expiryDate).toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    })
+    const formattedDate = formatDateDMY(item.expiryDate)
 
     const overdueNote =
       item.daysLeft < 0
-        ? `*ALREADY EXPIRED (${Math.abs(item.daysLeft)} dino se bakaya)*`
+        ? `*ALREADY EXPIRED (${Math.abs(item.daysLeft)} days overdue)*`
         : `scheduled in ${item.daysLeft} days`
 
     const message = encodeURIComponent(
@@ -204,7 +201,7 @@ export function CrmRenewals() {
         <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-5 shadow-xl">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-semibold text-red-400 uppercase tracking-wider">
-              Overdue / Bakaya Expiries
+              Overdue / Expired Renewals
             </span>
             <div className="p-2 rounded-xl bg-red-500/10 text-red-400">
               <AlertCircle className="w-4 h-4" />
@@ -302,10 +299,7 @@ export function CrmRenewals() {
                       </div>
                       <div className="text-xs text-zinc-400">
                         {bday.company || 'Individual'} • DOB:{' '}
-                        {new Date(bday.dob).toLocaleDateString('en-IN', {
-                          day: 'numeric',
-                          month: 'long',
-                        })}
+                        {formatDateDMY(bday.dob)}
                       </div>
                     </div>
                   </div>
@@ -333,7 +327,7 @@ export function CrmRenewals() {
                   <th className="py-3.5 px-4">Client Name</th>
                   <th className="py-3.5 px-4">Cycle & Amount</th>
                   <th className="py-3.5 px-4">Expiry Date</th>
-                  <th className="py-3.5 px-4">Due & Bakaya Days</th>
+                  <th className="py-3.5 px-4">Due Balance & Overdue Days</th>
                   <th className="py-3.5 px-4">Status</th>
                   <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
@@ -379,19 +373,15 @@ export function CrmRenewals() {
                       </td>
 
                       <td className="py-4 px-4 text-zinc-300">
-                        {new Date(r.expiryDate).toLocaleDateString('en-IN', {
-                          day: 'numeric',
-                          month: 'short',
-                          year: 'numeric',
-                        })}
+                        {formatDateDMY(r.expiryDate)}
                       </td>
 
-                      {/* Due Amount & Bakaya Din */}
+                      {/* Due Amount & Overdue Days */}
                       <td className="py-4 px-4">
                         {r.daysLeft < 0 ? (
                           <div className="space-y-0.5">
                             <span className="font-bold text-red-500 text-xs block">
-                              🔴 {Math.abs(r.daysLeft)} Din Se Bakaya
+                              🔴 {Math.abs(r.daysLeft)} Days Overdue
                             </span>
                             {r.dueAmount ? (
                               <span className="text-[11px] text-red-400 font-semibold">

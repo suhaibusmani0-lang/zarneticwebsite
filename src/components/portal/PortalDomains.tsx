@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import React, { useState } from 'react'
 import { Globe, ExternalLink, Copy, Check, ShieldCheck, Zap } from 'lucide-react'
